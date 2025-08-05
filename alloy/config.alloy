@@ -1,0 +1,48 @@
+// Read the JSONL file using filelog receiver
+// Match the .jsonl log file
+local.file_match "jsonl_logs" {
+  path_targets = [
+    { "__path__" = "/var/log/nlog/*.jsonl" },
+  ]
+  sync_period = "5s"
+}
+
+// Loki source to tail the JSONL logs
+loki.source.file "jsonl_scrape" {
+  targets       = local.file_match.jsonl_logs.targets
+  forward_to    = [loki.process.jsonl.receiver]
+  tail_from_end = false  // Set to true if you want to ignore old logs
+}
+
+// Loki processing pipeline for JSONL content
+loki.process "jsonl" {
+  stage.json {
+  expressions = {
+    userExperience   = "",
+    transactionName  = "",
+    eventTimestamp   = "",
+  }
+}
+
+
+  stage.timestamp {
+    source = "eventTimestamp"
+    format = "2006-01-02T15:04:05Z07:00"
+  }
+
+  stage.static_labels {
+    values = {
+      job           = "jsonl-generator",
+      group         = "jsonl",
+      service_name  = "json-log-ingestor",
+    }
+  }
+
+  forward_to = [loki.write.grafana_loki.receiver]
+}
+
+loki.write "grafana_loki" {
+    endpoint {
+      url = "http://loki:3100/loki/api/v1/push"
+    }
+  }
