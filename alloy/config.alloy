@@ -2,7 +2,7 @@
 // Match the .jsonl log file
 local.file_match "jsonl_logs" {
   path_targets = [
-    { "__path__" = "/var/log/nlog/*.jsonl" },
+    { "__path__" = "/var/log/nlog/*.jsonl", "hostname" = "appdyn-log" },
   ]
   sync_period = "5s"
 }
@@ -23,12 +23,17 @@ loki.process "jsonl" {
     eventTimestamp   = "",
   }
 }
-
-
   stage.timestamp {
     source = "eventTimestamp"
     format = "2006-01-02T15:04:05Z07:00"
   }
+
+  stage.labels {
+    values = {
+      userExperience  = "",         
+      userExperience = "", 
+    }
+}
 
   stage.static_labels {
     values = {

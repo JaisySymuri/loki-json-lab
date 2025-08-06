@@ -11,6 +11,7 @@ server:
 # This is used by the Logs Explorer app in Grafana.
 limits_config:
   volume_enabled: true
+  reject_old_samples: false  # Do not reject old samples, allowing for late-arriving logs.
 
 # The common block is used to set options for all of the components that make up Loki. These can be overridden using
 # the specific configuration blocks for each component.

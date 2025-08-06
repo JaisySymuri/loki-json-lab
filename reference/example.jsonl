@@ -1,0 +1,3 @@
+{ "time":"2023-01-18T17:08:41+00:00", "app":"example1", "component": ["parser","type"], "level" : "WARN", "message" : "app1 log line" }
+{ "time":"2023-01-18T17:08:42+00:00", "app":"example2", "component": ["parser","type"], "level" : "ERROR", "message" : "example noisy error" }
+

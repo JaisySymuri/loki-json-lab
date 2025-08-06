@@ -1,0 +1,33 @@
+stage.json {
+    expressions = { "appname" = "app" }
+}
+
+stage.labels {
+    values = { "applbl" = "appname" }
+}
+
+stage.match {
+    selector = "{applbl=\"example1\"}"
+
+    stage.json {
+        expressions = { "msg" = "message" }
+    }
+}
+
+stage.match {
+    selector = "{applbl=\"qux\"}"
+    stage.json {
+        expressions = { "msg" = "msg" }
+    }
+}
+
+stage.match {
+    selector = "{applbl=\"example2\"} |~ \".*noisy error.*\""
+    action   = "drop"
+
+    drop_counter_reason = "discard_noisy_errors"
+}
+
+stage.output {
+    source = "msg"
+}
